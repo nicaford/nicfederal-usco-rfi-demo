@@ -1,0 +1,16 @@
+// Panels
+.panel-primary > .panel-heading {
+  background:@brand-primary none;
+}
+.panel {
+  box-shadow:0 0.5em 1em rgba(0,0,0,0.1);
+  &-default > .panel-heading {
+    background:@gray-lighter none;
+  }
+  .for(success info warning danger); .-each(@name) {
+    &-@{name} > .panel-heading {
+      @state-color-name: "state-@{name}-bg";
+      background:@@state-color-name none;
+    }
+  }
+}

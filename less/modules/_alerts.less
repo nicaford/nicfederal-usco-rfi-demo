@@ -1,0 +1,12 @@
+// Alerts
+.alert {
+    border:0 none;
+    box-shadow:none;
+    text-shadow:none;
+    .for(success info warning danger); .-each(@name) {
+        &-@{name} {
+            @state-color-name: "state-@{name}-bg";
+            background:@@state-color-name none;
+        }
+    }
+}

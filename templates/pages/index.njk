@@ -1,0 +1,66 @@
+{% extends "public.njk" %}
+
+{% block content %}
+<div class="row">
+	<div class="col-md-8">
+		<div class="well">
+			<p class="lead">How can we help you today?</p>
+			<p><a class="btn btn-lg btn-info" data-toggle="modal" data-target="#register-chooser">Register your work</a></p>
+			<p><a class="btn btn-lg btn-info">Pre-register your work</a>&emsp; Be sure to <a href="https://www.copyright.gov/prereg/help.html#help15" target="_blank">Review eligibility requirements...</a></p>
+			<p><a class="btn btn-info">Submit electronic works to comply with a Notice for Mandatory Deposit</a></p>
+		</div>
+		<h2><i class="fa fa-envelope-o"></i> eCO Updates</h2>
+		<p>For electronic Copyright Office (eCO) system availability and updates <a href="https://public.govdelivery.com/accounts/USLOC/subscriber/new">subscribe to LOC updates</a>. Choose &ldquo;Copyright eService Maintenance and Updates&rdquo; from the list of topics after entering your email address.</p>
+	</div>
+	<div class="col-md-4">
+		<div class="panel panel-primary">
+			<div class="panel-heading">Log In</div>
+			<div class="panel-body">
+				<form action="dashboard.html" method="post">
+					<p>If you have already registered, please log in here:</p>
+					<div class="form-group">
+					  <label for="user_id">User ID</label>
+					  <input type="text" class="form-control" id="user_id" placeholder="">
+					</div>
+					<div class="form-group">
+					  <label for="password">Password</label>
+					  <input type="password" class="form-control" id="password" placeholder="">
+					</div>
+					<div class="form-group form-actions">
+						<button type="submit" class="btn btn-primary">Login</button>
+					</div>
+				</form>
+				<p>Having trouble logging in? <a href="#pwreset">Reset your password...</a></p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal modal-custom fade" id="register-chooser" tabindex="-1" role="dialog" aria-labelledby="modal-heading" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h2 class="modal-title" id="modal-heading">Choose the type of work to register:</h2>
+      </div>
+      <div class="modal-body">
+				<div class="form-group">
+					<div class="checkbox">
+					  <label><input type="checkbox" name="form-view"> Start in form view</label>&emsp;<a href="#info" data-toggle="popover" title="What is Form View?" data-content="&ldquo;Form view&rdquo; is a compact display of the form designed to allow users familiar with the form to fill it out more quickly."><i class="fa fa-question-circle"></i> What is this?</a>
+					</div>
+				</div>
+        <div class="list-group">
+					<a href="register-sound-recording.html" class="list-group-item">Sound Recording</a>
+					<a href="register-sound-recording.html" class="list-group-item">Video Recording</a>
+					<a href="register-sound-recording.html" class="list-group-item">Works and Lyrics</a>
+					<a href="register-sound-recording.html" class="list-group-item">Sound Recording</a>
+					<a href="register-sound-recording.html" class="list-group-item">Sound Recording</a>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

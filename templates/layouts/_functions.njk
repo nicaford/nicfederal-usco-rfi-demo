@@ -1,0 +1,166 @@
+{% macro formgroup(name, label, required, fgclass, placeholder, value, help, input_attr) %}
+    <div class="form-group {{fgclass}}">
+        <label for="{{name}}">{{label|safe}}{% if required %}&nbsp;<span class="form-required">*</span>{% endif %}</label>
+        <input type="text" class="form-control" id="{{name}}" name="{{name}}" placeholder="{{placeholder}}" {{input_attr|safe}}>
+        {% if help != '' or help != null %}
+        <p class="help-block">{{help}}</p>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro errorsFor(which) %}
+<transition name="float">
+  <div v-show="errors.has('{{which}}')" class="form-error-box">{%raw%}{{ errors.first('{%endraw%}{{which}}{%raw%}') }}{%endraw%}</div>
+</transition>
+{% endmacro %}
+
+{% macro formgrouptextarea(name, label, required, fgclass, placeholder, value, help, input_attr) %}
+    <div class="form-group {{fgclass}}">
+        <label for="{{name}}">{{label|safe}}{% if required %}&nbsp;<span class="form-required">*</span>{% endif %}</label>
+        <textarea class="form-control" id="{{name}}" name="{{name}}" placeholder="{{placeholder}}" {{input_attr|safe}}></textarea>
+        {% if help != '' or help != null %}
+        <p class="help-block">{{help}}</p>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro formgroupselect(name, label, required, fgclass, options, selected, help, input_attr) %}
+    <div class="form-group {{fgclass}}">
+        <label for="{{name}}">{{label|safe}}{% if required %}&nbsp;<span class="form-required">*</span>{% endif %}</label>
+        <select class="form-control" id="{{name}}" name="{{name}}" {{input_attr}}>
+            {% for key, value in options %}
+            <option value="{{key}}"{% if key == selected %}selected{% endif %}>{{value}}</option>
+            {% endfor %}
+        </select>
+        {% if help != '' %}
+        <p class="help-block">{{help}}</p>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro formgroupfile(name, label, fgclass, placeholder, value, help, input_attr) %}
+    <div class="form-group {{fgclass}}">
+        <label for="{{name}}">{{label|safe}}</label>
+        <div class="input-group input-file">
+            <label class="input-group-btn">
+                <span class="btn btn-tertiary">Browse&hellip; <input type="file" name="{{name}}" id="{{name}}" class="hide" multiple></span>
+            </label>
+            <input type="text" class="form-control" {{input_attr}} readonly>
+        </div>
+        {% if help != '' %}
+        <p class="help-block">{{help}}</p>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro formstateselect(name, label, fgclass, value) %}
+<div class="form-group {{fgclass}}">
+    <label for="{{name}}">State{{req|safe}}</label>
+    <select class="form-control" name="{{name}}">
+        <option value="AL">AL</option>
+        <option value="AK">AK</option>
+        <option value="AZ">AZ</option>
+        <option value="AR">AR</option>
+        <option value="CA">CA</option>
+        <option value="CO">CO</option>
+        <option value="CT">CT</option>
+        <option value="DE">DE</option>
+        <option value="DC">DC</option>
+        <option value="FL">FL</option>
+        <option value="GA">GA</option>
+        <option value="HI">HI</option>
+        <option value="ID">ID</option>
+        <option value="IL">IL</option>
+        <option value="IN">IN</option>
+        <option value="IA">IA</option>
+        <option value="KS">KS</option>
+        <option value="KY">KY</option>
+        <option value="LA">LA</option>
+        <option value="ME">ME</option>
+        <option value="MD">MD</option>
+        <option value="MA">MA</option>
+        <option value="MI">MI</option>
+        <option value="MN">MN</option>
+        <option value="MS">MS</option>
+        <option value="MO">MO</option>
+        <option value="MT">MT</option>
+        <option value="NE">NE</option>
+        <option value="NV">NV</option>
+        <option value="NH">NH</option>
+        <option value="NJ">NJ</option>
+        <option value="NM">NM</option>
+        <option value="NY">NY</option>
+        <option value="NC">NC</option>
+        <option value="ND">ND</option>
+        <option value="OH">OH</option>
+        <option value="OK">OK</option>
+        <option value="OR">OR</option>
+        <option value="PA">PA</option>
+        <option value="RI">RI</option>
+        <option value="SC">SC</option>
+        <option value="SD">SD</option>
+        <option value="TN">TN</option>
+        <option value="TX">TX</option>
+        <option value="UT">UT</option>
+        <option value="VT">VT</option>
+        <option value="VA">VA</option>
+        <option value="WA">WA</option>
+        <option value="WV">WV</option>
+        <option value="WI">WI</option>
+        <option value="WY">WY</option>
+    </select>
+</div>
+{% endmacro %}
+
+{% macro formcheckboxes(name, legend, options, required, help, fgclass) %}
+<div class="form-group {{fgclass}}">
+	<fieldset>
+		<legend>{{legend|safe}}{% if required %}&nbsp;<span class="form-required">*</span>{% endif %}</legend>
+		{% for value, label in options %}
+		<div class="checkbox">
+			<label><input type="checkbox" name="{{name}}" id="{{name}}-{{value}}" value="{{value}}"> {{label}}</label>
+		</div>
+		{% endfor %}
+		{% if help != '' %}
+		<div class="input-help">
+			{{help|safe}}
+		</div>
+		{% endif %}
+	</fieldset>
+</div>
+{% endmacro %}
+
+{% macro formradios(name, legend, options, required, help, fgclass) %}
+<div class="form-group {{fgclass}}">
+	<fieldset>
+		<legend>{{legend|safe}}{% if required %}&nbsp;<span class="form-required">*</span>{% endif %}</legend>
+		{% for value, label in options %}
+		<div class="radio">
+			<label><input type="radio" name="{{name}}" id="{{name}}-{{value}}" value="{{value}}"> {{label}}</label>
+		</div>
+		{% endfor %}
+		{% if help != '' %}
+		<div class="input-help">
+			{{help|safe}}
+		</div>
+		{% endif %}
+	</fieldset>
+</div>
+{% endmacro %}
+
+{% macro formselect(name, label, options, required, help, selected, fgclass) %}
+<div class="form-group {{fgclass}}">
+	<label for="{{name}}">{{label|safe}}{% if required %}&nbsp;<span class="form-required">*</span>{% endif %}</label>
+	<select id="{{name}}" name="{{name}}" class="form-control">
+		<option{% if not selected %} selected{% endif %}>Please select...</option>
+		{% for value, title in options %}
+		<option value="{{value}}"{% if selected == value %} selected{% endif %}>{{title}}</option>
+		{% endfor %}
+	</select>
+	{% if help != '' %}
+	<div class="input-help">
+		{{help|safe}}
+	</div>
+	{% endif %}
+</div>
+{% endmacro %}

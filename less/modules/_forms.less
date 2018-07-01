@@ -1,0 +1,183 @@
+.form-group {
+	label span.note {
+		font-weight:normal;
+	}
+}
+
+// Directions for the form
+.form-direction {
+	font-weight:300;
+	font-style:italic;
+	font-size:18px;
+	em {
+		font-style:normal;
+	}
+}
+
+// Form help text
+.help-block {
+	&:before {
+		.fa-icon('\f059');
+		color:@brand-success;
+		margin-right:0.5em;
+	}
+	&:empty {
+		display:none;
+	}
+}
+
+@error-caret-size:8px;
+@error-caret-color: @brand-danger;
+.form-error-box {
+	display:inline-block;
+	margin-top:0.6em;
+	padding:8px 10px;
+	background-color:lighten(@brand-danger, 55%);
+	border:1px solid @brand-danger;
+	position:relative;
+	transform:translateY(-0.4em);
+	transition:transform 500ms ease-out;
+	&:before {
+		content:"";
+		display:block;
+		position:absolute;
+		top:-@error-caret-size;
+		border-style:solid;
+		border-width:0 @error-caret-size @error-caret-size @error-caret-size;
+		border-color:transparent transparent @error-caret-color transparent;
+	}
+}
+
+// Standard form elements
+.form-control,
+.bootstrap-select .btn-default.dropdown-toggle {
+	background-color:#f8f8f8;
+	color:@gray-darker;
+	padding:8px 10px; // BS values are 6px 18px... not right for form inputs
+	height:auto; // BS sets this specifically. Not sure why...
+	&:focus,
+	&:active {
+		background-color:#fff;
+	}
+}
+
+.bootstrap-select .btn-default.dropdown-toggle {
+  background-image: none; // Reset unusual Firefox-on-Android default style; see https://github.com/necolas/normalize.css/issues/214
+  border: 1px solid @input-border;
+	box-shadow:inset 0 1px 1px rgba(0,0,0,.075);
+  transition:border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+
+input.form-control[size],
+input[type="date"].form-control {
+	width:auto;
+}
+
+// Mimics form label
+.form-label {
+	font-weight:700;
+	margin:0 0 15px 0;
+}
+
+// Make selects HAWT
+select.form-control:not([multiple]) {
+  -webkit-appearance:none;
+	-moz-appearance:none;
+	appearance:none;
+  background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAECAYAAABcDxXOAAAACXBIWXMAAAsSAAALEgHS3X78AAAAQUlEQVQI13XKMRGAMBAAwU0UIQEnUL2nTxUk4QQHoctQhGtvS2Z2HNbd2GtEnLj+QEQ8FRZwAihjjHlaax3bF8AL0xUWq2fTWocAAAAASUVORK5CYII=);
+  background-image:url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4LjA0IDQiPjxkZWZzPjxzdHlsZT4uYXtmaWxsOiM5ODk4OTg7fTwvc3R5bGU+PC9kZWZzPjx0aXRsZT5jYXJldDwvdGl0bGU+PHBvbHlnb24gY2xhc3M9ImEiIHBvaW50cz0iMCAwIDguMDQgMCA0LjAyIDQgMCAwIi8+PC9zdmc+);
+	background-position:right 12px center;
+	background-repeat:no-repeat;
+	background-size:8px;
+	padding-right:25px;
+}
+
+// Required
+.form-required {
+	color:@brand-danger;
+	font-size:@font-size-large;
+	margin-left:0.1em;
+	line-height:1em;
+}
+
+// Form sections (i.e. steps)
+.form-section {
+	background-color:#f2f2f2;
+	padding:36px;
+	margin-bottom:24px;
+	&-label {
+		color:@brand-primary-dark;
+		margin-bottom:36px;
+		margin-top:0;
+		text-align:Center;
+		position:relative;
+		&:after {
+	    content:"";
+	    position:absolute;
+	    bottom:-16px;
+			left:50%;
+			transform:translateX(-50%);
+	    display:block;
+	    width:140px;
+	    height:6px;
+	    background-color:#ddd;
+	  }
+	}
+	.form-actions {
+		border-top:1px solid @line-color;
+		padding:12px 0;
+	}
+	hr {
+		border-color:lighten(@gray-light, 10%);
+	}
+}
+
+.form-sub-section {
+	background-color:#fff;
+	padding:15px;
+	margin-bottom:10px;
+}
+
+.form-wizard-control {
+
+}
+
+// Checkbox/radios
+.form-group fieldset {
+	margin:0;
+	padding:0;
+}
+.form-group legend {
+	font-size:@font-size-base;
+	color:@text-color;
+	font-weight:700;
+	margin:0 0 5px 0;
+	padding:0;
+	border:0;
+	span.note {
+		font-weight:normal;
+	}
+}
+
+.form-radios-grid,
+.form-checkboxes-grid {
+	display:flex;
+	flex-wrap:wrap;
+	padding-top:8px;
+	.radio,
+	.checkbox {
+		flex-grow:1;
+		margin:0 0 10px 0;
+	}
+}
+
+.form-flex {
+	display:flex;
+	align-items:center;
+	.form-group + .form-group {
+		margin-left:1em;
+	}
+}
+.form-flex-grow {
+	flex-grow:1;
+}

@@ -1,0 +1,10 @@
+// Progress bars
+.progress-bar {
+    background:@brand-primary none;
+    .for(@brand-labels); .-each(@name) {
+        &-@{name} {
+            @color-name: "brand-@{name}";
+            background:@@color-name none;
+        }
+    }
+}

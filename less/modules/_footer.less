@@ -1,0 +1,63 @@
+/* Footer */
+footer {
+	font-size: 12px;
+	color: #ffffff;
+	background-color: #383838;
+  a {
+  	color: #ffffff;
+    &:hover {
+    	color: #CCC;
+    }
+  }
+  .color {
+  	color: #444;
+  }
+  h6 {
+  	color: #ffffff;
+  	font-size: 12px;
+  	font-weight: bold;
+  }
+  ul {
+  	list-style-type: none;
+  	margin-left: 0px;
+  	padding-left: 0px;
+    li {
+    	padding: 3px 0px !important;
+    	line-height: 16px;
+    }
+  }
+  .widgets {
+  	margin-top: 20px;
+  }
+  .copy {
+  	border-top: 1px solid #ddd;
+  	padding: 10px 0px;
+  	margin-top: 10px;
+  }
+}
+
+// Footer spacing
+html {
+  position: relative; /* make sure footer will not block the content */
+  min-height: 100%; /* make sure footer stay at bottom with smaller content */
+}
+body {
+  margin-bottom: 308px; /* reserve space for footer */
+}
+footer {
+  position: absolute;
+  bottom: 0;
+  height: auto;
+  width: 100%;
+}
+
+@media (max-width: @screen-sm) {
+  // body {
+  //   margin-bottom:0;
+  // }
+  footer {
+    // position:static;
+  	padding-left: 20px;
+  	padding-right: 20px;
+  }
+}

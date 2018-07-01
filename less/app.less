@@ -1,0 +1,99 @@
+
+@import "node_modules/bootstrap/less/variables";
+@import "modules/_mixins";
+
+@brand-labels:primary success info warning danger;
+
+@line-color:@gray-light;
+
+// Overrides
+// ---------
+@import "modules/_navbar";
+@import "modules/_jumbotron";
+@import "modules/_labels";
+// Badges
+.badge {
+    color:@text-color;
+}
+@import "modules/_buttons";
+@import "modules/_forms";
+@import "modules/_alerts";
+@import "modules/_progress-bars";
+@import "modules/_list-groups";
+@import "modules/_panels";
+@import "modules/_wells";
+@import "modules/_modals";
+
+// Custom Stuff
+// ------------
+body {
+  color: @text-color;
+  font-size: @font-size-base;
+  line-height: @line-height-computed;
+  font-weight: normal;
+}
+
+@import "modules/_search";
+@import "modules/_type";
+
+/* Site title */
+.site-title {
+  font-size:@font-size-large;
+  line-height:@line-height-computed;
+  margin:0 0 48px;
+  font-weight:600;
+  color:#888;
+  position:relative;
+  &:after {
+    content:"";
+    position:absolute;
+    bottom:-22px;
+    display:block;
+    width:120px;
+    height:8px;
+    background-color:@brand-warning;
+  }
+}
+
+/* Breadcrumb */
+.breadcrumb {
+	background-color: #EFEFEF;
+}
+.breadcrumb > li {
+	font-size: 10px;
+}
+
+/* Content */
+.content {
+	padding: 20px 0;
+}
+
+@import "modules/_social-links";
+@import "modules/_footer";
+
+// print
+@media print {
+    .social-links,
+    footer {
+        display: none !important;
+    }
+}
+
+// Vue Transitions
+.float-enter-active,
+.float-leave-active {
+  transition:all 300ms ease-out;
+}
+
+// Start of transition
+.float-enter,
+.float-leave-to {
+  transform:translateY(10px);
+  opacity:0;
+}
+// End of transition, "resting point"
+.float-enter-to,
+.v-leave {
+  transform:translateY(0);
+  opacity:1;
+}

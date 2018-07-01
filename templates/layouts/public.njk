@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+		<title>{{ site_name }}</title>
+
+		{% include "parts/_head.njk" %}
+
+	</head>
+	<body>
+		{% import "./_functions.njk" as m %}
+
+		{% include "parts/_header.njk" %}
+
+		<main class="content">
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="site-title">{{ site_name }} (eCO)</div>
+					</div>
+				</div>
+				{% block content %}{% endblock %}
+			</div>
+		</main>
+
+		{% include "parts/_social-links.njk" %}
+
+		{% include "parts/_footer.njk" %}
+
+		{% include "parts/_scripts.njk" %}
+
+		{% block pagejs %}{% endblock %}
+	</body>
+</html>

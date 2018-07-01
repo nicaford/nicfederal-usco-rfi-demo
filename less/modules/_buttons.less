@@ -1,0 +1,23 @@
+// Buttons
+.btn {
+    box-shadow:none;
+    border-width:0 2px 2px 0;
+    text-shadow:none;
+    &-default {
+        background:#fff none;
+        box-shadow:inset 0 0 0 1px @gray-light;
+        border-width:0 1px 1px 0;
+    }
+    .for(@brand-labels); .-each(@name) {
+        &-@{name} {
+            @color-name: "brand-@{name}";
+            background:@@color-name none; // overrides to get rid of gradient
+            color:contrast(@@color-name, #000, #fff, 50%);
+        }
+        &-hover-@{name}:hover {
+          @color-name: "brand-@{name}";
+          background:@@color-name none; // overrides to get rid of gradient
+          color:contrast(@@color-name, #000, #fff, 50%);
+        }
+    }
+}

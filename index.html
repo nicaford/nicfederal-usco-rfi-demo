@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+		<title>Electronic Copyright Office</title>
+
+		<!-- STYLESHEETS -->
+<!-- Font awesome CSS -->
+<link href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<!-- Bootstrap CSS -->
+<link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+<link href="/lib/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">
+<!-- Custom CSS -->
+<link href="/css/app.css" rel="stylesheet">
+
+<!-- HTML5 Support for IE -->
+<!--[if lt IE 9]> <script src="/lib/html5shim.js"></script> <![endif]-->
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+
+
+	</head>
+	<body>
+		
+
+		<!-- Header Starts -->
+<header id="header-site">
+	<div class="navbar navbar-inverse">
+		<div class="container">
+			<!-- Menu button for smallar screens -->
+			<div class="navbar-header">
+				<button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a href="/" class="navbar-brand-custom"><img src="images/cp-logo2.png" alt="Copyright" height="50"/></a>
+			</div>
+			<!-- Site name for smaller screens -->
+			<!-- Navigation starts -->
+			<div class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+				<form class="navbar-form navbar-right hidden-xs hidden-sm" role="search" title="Search Copyright.gov" action="https://search.copyright.gov/search" id="search_form" method="get">
+					<!-- Define a button to toggle the search area -->
+					<div class="form-group">
+						<div class="input-group">
+							<input autocomplete="off" class="usagov-search-autocomplete form-control" id="query" name="query" placeholder="Search" type="text">
+							<input class="form-control" name="utf8" value="✓" type="hidden">
+							<input class="form-control" id="affiliate" name="affiliate" value="copyright" type="hidden">
+							<span type="submit" id="search-icon" class="input-group-addon">
+								<button type="submit">
+									<i class="fa fa-search" aria-hidden="true"></i>
+								</button>
+							</span>
+						</div>
+					</div>
+				</form>
+
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="index.html"><i class="fa fa-home"></i> Home</a></li>
+					<li><a href="help.html">Help</a></li>
+					<li><a href="contact.html">Contact Us</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<!-- Navigation bar starts -->
+	<div class="container hidden-md hidden-lg">
+		<div class="row">
+			<div class="col-xs-12">
+				<form class="navbar-form navbar-right" role="search" title="Search Copyright.gov" action="https://search.copyright.gov/search" id="search_form_mobile" method="get">
+					<div class="form-group">
+						<div class="input-group">
+							<input autocomplete="off" class="usagov-search-autocomplete form-control" id="query-mobile" name="query" placeholder="Search" type="text">
+							<input class="form-control" name="utf8" value="✓" type="hidden">
+							<input class="form-control" id="affiliate" name="affiliate" value="copyright" type="hidden">
+							<span id="search-icon-mobile" class="input-group-addon">
+								<button type="submit">
+									<i class="fa fa-search" aria-hidden="true"></i>
+								</button>
+							</span>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</header>
+
+
+		<main class="content">
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="site-title">Electronic Copyright Office (eCO)</div>
+					</div>
+				</div>
+				
+<div class="row">
+	<div class="col-md-8">
+		<div class="well">
+			<p class="lead">How can we help you today?</p>
+			<p><a class="btn btn-lg btn-info" data-toggle="modal" data-target="#register-chooser">Register your work</a></p>
+			<p><a class="btn btn-lg btn-info">Pre-register your work</a>&emsp; Be sure to <a href="https://www.copyright.gov/prereg/help.html#help15" target="_blank">Review eligibility requirements...</a></p>
+			<p><a class="btn btn-info">Submit electronic works to comply with a Notice for Mandatory Deposit</a></p>
+		</div>
+		<h2><i class="fa fa-envelope-o"></i> eCO Updates</h2>
+		<p>For electronic Copyright Office (eCO) system availability and updates <a href="https://public.govdelivery.com/accounts/USLOC/subscriber/new">subscribe to LOC updates</a>. Choose &ldquo;Copyright eService Maintenance and Updates&rdquo; from the list of topics after entering your email address.</p>
+	</div>
+	<div class="col-md-4">
+		<div class="panel panel-primary">
+			<div class="panel-heading">Log In</div>
+			<div class="panel-body">
+				<form action="dashboard.html" method="post">
+					<p>If you have already registered, please log in here:</p>
+					<div class="form-group">
+					  <label for="user_id">User ID</label>
+					  <input type="text" class="form-control" id="user_id" placeholder="">
+					</div>
+					<div class="form-group">
+					  <label for="password">Password</label>
+					  <input type="password" class="form-control" id="password" placeholder="">
+					</div>
+					<div class="form-group form-actions">
+						<button type="submit" class="btn btn-primary">Login</button>
+					</div>
+				</form>
+				<p>Having trouble logging in? <a href="#pwreset">Reset your password...</a></p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal modal-custom fade" id="register-chooser" tabindex="-1" role="dialog" aria-labelledby="modal-heading" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h2 class="modal-title" id="modal-heading">Choose the type of work to register:</h2>
+      </div>
+      <div class="modal-body">
+				<div class="form-group">
+					<div class="checkbox">
+					  <label><input type="checkbox" name="form-view"> Start in form view</label>&emsp;<a href="#info" data-toggle="popover" title="What is Form View?" data-content="&ldquo;Form view&rdquo; is a compact display of the form designed to allow users familiar with the form to fill it out more quickly."><i class="fa fa-question-circle"></i> What is this?</a>
+					</div>
+				</div>
+        <div class="list-group">
+					<a href="register-sound-recording.html" class="list-group-item">Sound Recording</a>
+					<a href="register-sound-recording.html" class="list-group-item">Video Recording</a>
+					<a href="register-sound-recording.html" class="list-group-item">Works and Lyrics</a>
+					<a href="register-sound-recording.html" class="list-group-item">Sound Recording</a>
+					<a href="register-sound-recording.html" class="list-group-item">Sound Recording</a>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+			</div>
+		</main>
+
+		<!-- Social -->
+<div class="social-links">
+	<div class="container">
+		<div class="row">
+			<p class="text-right no-margin">
+				<a href="https://public.govdelivery.com/accounts/USLOC/subscriber/new?">Subscribe</a>
+				|
+				<a href="https://twitter.com/CopyrightOffice">Twitter</a>
+				|
+				<a href="https://www.youtube.com/uscopyrightoffice">YouTube</a>
+				|
+				<a href="https://blogs.loc.gov/copyright/">Blog</a>
+				|
+				<a href="https://www.research.net/r/Copyrightweb">Take our Survey</a>
+			</p>
+		</div>
+	</div>
+</div>
+
+
+		<!-- Footer -->
+<footer>
+	<div class="container">
+		<div class="row">
+			<div class="widgets">
+				<div class="col-sm-2 col-md-2">
+					<div class="fwidget">
+						<h6 class="bold">About Us</h6>
+						<ul>
+							<li><a href="/about/">Overview</a></li>
+							<li><a href="/about/leadership/">Leadership</a></li>
+							<li><a href="/about/resources-education.html">Resources and Education</a></li>
+							<li><a href="/about/special-programs/partnerships.html">Academic Partnerships</a></li>
+							<li><a href="/about/special-programs/internships.html">Internships</a></li>
+							<li><a href="/about/special-programs/kaminstein.html">Kaminstein Program</a></li>
+							<li><a href="/about/special-programs/ringer.html">Ringer Fellowship</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="col-sm-2 col-md-2">
+					<div class="fwidget">
+						<h6 class="bold">News</h6>
+						<ul>
+							<li><a href="fedreg/">Federal Register Notices</a></li>
+							<li><a href="newsnet/">NewsNet</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="col-sm-2 col-md-2">
+					<div class="fwidget">
+						<h6 class="bold">Law and Guidance</h6>
+						<ul>
+							<li><a href="/title17/">Copyright Law</a></li>
+							<li><a href="/title37/">Regulations</a></li>
+							<li><a href="/rulemaking/">Rulemakings</a></li>
+							<li><a href="/comp3/">Compendium</a></li>
+							<li><a href="/forms/">Forms</a></li>
+							<li><a href="/circs/">Circulars</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="col-sm-2 col-md-2">
+					<div class="fwidget">
+						<h6 class="bold">Publications</h6>
+						<ul>
+							<li><a href="/policy/">Policy Studies</a></li>
+							<li><a href="/legislation/">Legislative Developments</a></li>
+							<li><a href="/laws/hearings/">Congressional Hearings</a></li>
+							<li><a href="/international-issues/">International Issues</a></li>
+							<li><a href="/about/office-register/speeches.html">Register's Speeches</a></li>
+						</ul>
+					</div>
+					<div class="fwidget">
+						<h6 class="bold">
+							<a href="/help/">Contact Us</a>
+						</h6>
+					</div>
+				</div>
+				<div class="col-sm-4 col-md-4">
+					<div class="fwidget">
+						<img src="/images/office-seal.png" alt="" border="0">
+					</div>
+					<div class="fwidget">
+						<h6 class="bold">U.S. Copyright Office</h6>
+						<address>
+							101 Independence Ave. S.E.<br>
+							Washington, D.C. 20559-6000<br>
+							(202) 707–3000&nbsp;or&nbsp;1 (877) 476–0778 (toll free)
+						</address>
+					</div>
+					<div class="fwidget">
+						<p><a href="/cdn-cgi/l/email-protection#02616d727b756760426e6d612c656d74">Webmaster</a></p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="copy">
+			<p align="text-right">
+				<a href="http://www.loc.gov/index.html">Library of Congress
+				</a> | <a href="http://congress.gov/">Congress.gov</a> | <a href="http://www.usa.gov/">USA.gov</a> | <a href="http://www.copyright.gov/foia/">FOIA</a> | <a href="/about/legal.html">Legal</a> | <a href="about/privacy-policy.html">Privacy Policy</a>
+			</p>
+		</div>
+	</div>
+</footer>
+
+
+		<!-- JS -->
+<script src="/lib/jquery-1.12.4.min.js"></script>
+<script src="/lib/bootstrap/js/bootstrap.min.js"></script>
+<script src="/lib/bootstrap-select/js/bootstrap-select.min.js"></script>
+<script src="/js/global.js"></script>
+
+
+		
+	</body>
+</html>

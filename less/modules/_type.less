@@ -1,0 +1,53 @@
+h1, .h1, h2, .h2,
+h3, .h3, h4, .h4,
+h5, .h5, h6, .h6 {
+	font-weight: 600;
+	color: @brand-primary;
+}
+h1, .h1 {
+	color:#666;
+}
+h2 {
+	font-weight: 400;
+}
+h3 {
+	font-weight: 300;
+}
+h6 {
+	font-weight: 300;
+}
+
+p {
+	margin:0 0 1em;
+}
+
+hr {
+	margin:15px 0 20px;
+}
+
+a:focus {
+  outline: 2px dotted @brand-warning;
+  outline-offset: 3px;
+}
+
+// Testimonials
+blockquote {
+	background: #f9f9f9;
+	margin-bottom: 5px;
+	color: #777;
+}
+blockquote p {
+	font-size: 13px;
+	font-weight: 400;
+	margin-bottom: 5px;
+}
+blockquote small {
+	color: #555;
+}
+blockquote small::before {
+	content:"";
+}
+
+.no-margin {
+	margin-bottom:0;
+}

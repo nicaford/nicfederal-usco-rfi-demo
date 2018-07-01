@@ -1,0 +1,30 @@
+{
+  "name": "eco-mockups",
+  "version": "0.0.1",
+  "description": "Form mock up for copyright.gov's eCo service.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Andrew Meyer, NIC Federal",
+  "license": "ISC",
+  "devDependencies": {
+    "autoprefixer": "^8.6.4",
+    "bootstrap": "^3.3.7",
+    "cssnano": "*",
+    "grunt": "^1.0.3",
+    "grunt-browser-sync": "^2.2.0",
+    "grunt-cli": "^1.2.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-contrib-less": "^1.4.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-exec": "^1.0.1",
+    "grunt-nunjucks-2-html": "^1.0.5",
+    "grunt-postcss": "^0.8.0",
+    "grunt-prettify": "^0.4.0"
+  },
+  "dependencies": {
+    "bootstrap-select": "^1.12.4"
+  }
+}
