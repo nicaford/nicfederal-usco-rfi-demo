@@ -1,0 +1,1261 @@
+use_deposit{% extends "public.njk" %}
+
+{% block content %}
+<div id="form" class="row">
+	<div class="col-sm-12">
+		<div class="pull-right">
+			<a class="btn btn-sm btn-default" href="register-sound-recording--form.html">Show Form View&emsp;<i class="fa fa-wpforms"></i></a>
+		</div>
+		<h1>Register Sound Recording</h1>
+	</div>
+	<form method="post" action="thank-you.html">
+		<div class="col-md-3 col-md-push-9 col-md-sticky hidden-sm hidden-xs">
+			<div class="list-group">
+				<span class="list-group-item list-group-heading">Steps</span>
+				<span v-for="item in steps" v-bind:class="{'list-group-item':true, 'active':(step === item.num), 'done':(step > item.num)}" :key="item.num">
+					<span v-if="item.num === step" class="sr-only">(Current) </span>{%raw%}{{item.label}}{%endraw%}
+				</span>
+			</div>
+		</div>
+		<div class="col-md-9 col-md-pull-3">
+			<section class="form-section" v-show="step == 1">
+				<h2 class="form-section-label"><span class="circle">1.</span> Title of Work</h2>
+				<p class="form-direction">To get started, tell us the title of the work:</p>
+				<div class="form-group">
+				  <label for="work_title">Title of this Work&nbsp;{{req|safe}}</label>
+				  <input type="text" class="form-control" name="work_title" v-model="work_title" v-validate="'required'" data-vv-scope="section-1" autocomplete="off">
+					{{m.errorsFor('section-1.work_title')}}
+				</div>
+				<div class="form-group">
+					<fieldset>
+						<legend>Does the work have any other titles? <span class="note">(Select one...)</span></legend>
+						<div class="form-radios-grid">
+							<div class="radio">
+								<label><input type="radio" name="alt_title_type" v-model="alt_title_type" id="alt_title_type-none" value="" checked> <em>No additional title</em></label>
+							</div>
+							<div class="radio">
+								<label><input type="radio" name="alt_title_type" v-model="alt_title_type" id="alt_title_type-previous" value="previous"> Previous title</label>
+							</div>
+							<div class="radio">
+								<label><input type="radio" name="alt_title_type" v-model="alt_title_type" id="alt_title_type-alternative" value="alternative"> Alternative title</label>
+							</div>
+							<div class="radio">
+								<label><input type="radio" name="alt_title_type" v-model="alt_title_type" id="alt_title_type-contents" value="contents"> Contents title</label>
+							</div>
+						</div>
+					</fieldset>
+				</div>
+				<div v-if="alt_title_type != ''">
+					<div class="form-group">
+					  <label for="alt_title">Previous, alternative, or contents titles&nbsp;{{req|safe}}</label>
+						<textarea name="alt_title" class="form-control" rows="2" v-model="alt_title" v-validate="'required'" data-vv-scope="section-1"></textarea>
+						{{m.errorsFor('section-1.alt_title')}}
+					  <p class="help-block">Separate multiple titles with a comma.</p>
+					</div>
+				</div>
+			</section>
+
+			<section class="form-section" v-show="step == 2" data-vv-scope="section-2">
+				<h2 class="form-section-label"><span class="circle">2.</span> Authors</h2>
+				<p class="form-direction">Now we need to gather the authors for the work, <em>{%raw%}{{work_title}}{%endraw%}.</em></p>
+
+				<div class="authors-listing" v-if="authors.length">
+					<h3>Author List</h3>
+					<table class="table">
+						<thead>
+							<tr>
+								<th>Author Name</th>
+								<th>Work for Hire</th>
+								<th>Birth Year &amp; Death Year</th>
+								<th>Author Nationality</th>
+								<th>Nature of Authorship</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="(author, index) in authors">
+								<td>{%raw%}{{author.author_name}}{%endraw%}</td>
+								<td>{%raw%}{{author.author_wfh}}{%endraw%}</td>
+								<td>{%raw%}{{author.author_birth_year}}{{ author.author_death_year ? ' &ndash; ' + author.author_death_year : ''}}{%endraw%}</td>
+								<td>{%raw%}{{author.author_nationality}} {{'('+author.author_nationality_type+')'}}{%endraw%}</td>
+								<td>{%raw%}{{author.author_nature}}{%endraw%}</td>
+								<td><button type="button" class="btn btn-default btn-sm" v-on:click="removeAuthor(index)"><i class="fa fa-remove"></i> Remove</button></td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="form-actions" v-if="author_count === authors.length">
+						<button type="button" class="btn btn-success" v-on:click="increaseAuthorCount"><i class="fa fa-user-plus"></i> Add another author</button>
+					</div>
+				</div>
+
+				<fieldset id="author_form" v-if="authors.length < author_count">
+					<legend>Add an author</legend>
+
+					<div class="form-sub-sections">
+						<div class="form-sub-section" v-show="substeps.author.step == 1">
+							<div class="form-group">
+							  <label for="author-form-identity">Was this author's contribution to this work anonymous or pseudonymous?</label>
+								<div class="radio">
+									<label><input type="radio" name="author-form-identity" v-model="author_form.author_identity" value="real"> No</label>
+								</div>
+								<div class="radio">
+									<label><input type="radio" name="author-form-identity" v-model="author_form.author_identity" value="anonymous"> Anonymous</label>
+								</div>
+								<div class="radio">
+									<label><input type="radio" name="author-form-identity" v-model="author_form.author_identity" value="pseudonymous"> Pseudonymous</label>
+								</div>
+							</div>
+							<div class="form-group" v-show="author_form.author_identity == 'anonymous'">
+							  <label for="author-form-anonymous-option">Please select an option for the author's name on an anonymous work:</label>
+								<div class="radio">
+									<label><input type="radio" name="author-form-anonymous-option" v-model="author_form.author_anon_option" value="blank"> Register without providing a name</label>
+								</div>
+								<div class="radio">
+									<label><input type="radio" name="author-form-anonymous-option" v-model="author_form.author_anon_option" value="anonymous"> Register author using &ldquo;Anonymous&rdquo; for name</label>
+								</div>
+								<div class="radio">
+									<label><input type="radio" name="author-form-anonymous-option" v-model="author_form.author_anon_option" value="provide_name"> Register with author's name, revealing the author's identity</label>
+								</div>
+							</div>
+							<div class="form-group" v-show="author_form.author_identity == 'pseudonymous'">
+							  <label for="author-form-pseudonymous-option">Please select an option for the author's name on an pseudonymous work:</label>
+								<div class="radio">
+									<label><input type="radio" name="author-form-pseudonymous-option" v-model="author_form.author_pseudo_option" value="blank"> Register without providing a name</label>
+								</div>
+								<div class="radio">
+									<label><input type="radio" name="author-form-pseudonymous-option" v-model="author_form.author_pseudo_option" value="pseudonym"> Register using the author's pseudonymous name</label>
+								</div>
+								<div class="radio">
+									<label><input type="radio" name="author-form-pseudonymous-option" v-model="author_form.author_pseudo_option" value="provide_name"> Register using the author's pseudonymous name <strong>and</strong> real name</label>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-sub-section" v-show="substeps.author.step == 2">
+							<div class="form-group">
+							  <label for="author-form-wfh">Was this author's contribution a "work made for hire"?&nbsp;{{req|safe}}</label>
+							  <div class="radio">
+									<label><input type="radio" name="author-form-wfh" v-model="author_form.author_wfh" value="yes"> Yes</label>
+								</div>
+								<div class="radio">
+									<label><input type="radio" name="author-form-wfh" v-model="author_form.author_wfh" value="no"> No</label>
+								</div>
+								<p><strong>Note:</strong> Under the law the &ldquo;author&rdquo; of a &ldquo;work made for hire&rdquo; is generally the employer, not the employee. For any part of this work that was &ldquo;made for hire,&rdquo; check &ldquo;yes&rdquo;, give the employer (or other person for whom the work was prepared) as &ldquo;Author&rdquo; in the next step.</p>
+							</div>
+						</div>
+
+						<div class="form-sub-section" v-show="substeps.author.step == 3">
+							<div class="form-group">
+								<label for="author-form-name">
+									<span v-if="author_form.author_wfh === 'yes'">What is the name of the person or employer for whom the work was prepared?&nbsp;{{req|safe}}</span>
+									<span v-else-if="author_form.author_pseudo_option === 'pseudonym'">What is the pseudonymous name of the author?</span>
+									<span v-else-if="author_form.author_pseudo_option === 'provide_name'">What is the real name of the author?</span>
+									<span v-else>What is the name of this author?&nbsp;{{req|safe}}</span>
+								</label>
+								<div class="input-group" v-if="author_form.author_identity == 'pseudonymous'">
+									<input type="text" class="form-control" name="author-form-name" v-model="author_form.author_name">
+									<span class="input-group-addon" v-if="author_form.author_pseudo_option == 'pseudonym'">, pseudonym</span>
+									<span class="input-group-addon" v-if="author_form.author_pseudo_option == 'provide_name'">, whose pseudonym is</span>
+									<input type="text" class="form-control" v-if="author_form.author_pseudo_option == 'provide_name'" v-model="author_form.author_pseudonym" name="author-form-pseudonym" value="">
+								</div>
+								<input v-else type="text" class="form-control" name="author-form-name" v-model="author_form.author_name" :readonly="author_form.author_anon_option == 'anonymous'">
+							</div>
+						</div>
+
+						<div class="form-sub-section" v-show="substeps.author.step == 4">
+							<p class="form-label">What are the birth and death dates of this author?</p>
+							<div class="row">
+								<div class="form-group col-sm-3 col-xs-6">
+									<label for="author_form_birth_year">Birth Year&nbsp;{{req|safe}}</label>
+									<input type="text" class="form-control" name="author_form_birth_year" v-model="author_form.author_birth_year" v-mask="'####'" maxlength="4">
+								</div>
+								<div class="form-group col-sm-3 col-xs-6">
+									<label for="author_form_death_year">Death Year</label>
+									<input type="text" class="form-control" name="author_form_death_year" v-model="author_form.author_death_year" v-mask="'####'" maxlength="4">
+								</div>
+							</div>
+						</div>
+
+						<div class="form-sub-section" v-show="substeps.author.step == 5">
+							<div class="form-group">
+							  <label for="author_form_nationality">Author's Nationality or Domicile</label>
+								<div class="form-inline">
+									<div class="form-group">
+									  <label for="author_form_nationality_type" class="sr-only">Nationality or domicile</label>
+										<select class="form-control" name="author_form_nationality_type" v-model="author_form.author_nationality_type">
+											<option value="Citizen" selected>Citizen of</option>
+											<option value="Domiciled">Domiciled in</option>
+										</select>
+									</div>
+									<div class="form-group">
+										<select class="selectpicker" data-live-search="true" name="author_form_nationality" v-model="author_form.author_nationality">
+											{% for item in countries %}<option value="{{item.name}}">{{item.name}}</option>{% endfor %}
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-sub-section" v-show="substeps.author.step == 6">
+							<div class="form-group">
+								<label for="author_form_nature_authorship">Nature of Authorship</label>
+								<textarea class="form-control" name="author_form_nature_authorship" rows="3" v-model="author_form.author_nature"></textarea>
+								<p class="help-block">Briefly describe the nature of material created by this author in which copyright is claimed.</p>
+							</div>
+						</div>
+
+						<div class="form-actions">
+							<button type="button" class="btn btn-info pull-right" v-show="substeps.author.step < substeps.author.total" v-on:click="stepNext('author')">Next <i class="fa fa-hand-o-right"></i></button>
+							<button type="button" v-show="substeps.author.step == 6" v-on:click="addAuthor" class="btn btn-success pull-right"><i class="fa fa-check"></i> Add Author</button>
+							<button type="button" class="btn btn-default pull-left" v-show="substeps.author.step > 1" v-on:click="stepBack('author')"><i class="fa fa-hand-o-left"></i> Back</button>
+							<button type="button" class="btn btn-default pull-left" v-show="author_count > 1" v-on:click="clearAuthorForm()"><i class="fa fa-remove"></i> Cancel</button>
+						</div>
+					</div>
+				</fieldset>
+			</section>
+
+			<section class="form-section" v-show="step == 3" data-vv-scope="section-3">
+				<h2 class="form-section-label"><span class="circle">3.</span> Registration Dates</h2>
+
+				<p class="form-direction">Now we need to get some dates for the work.</p>
+
+				<div class="form-group">
+				  <label for="year_completed">What year was the creation of this work completed?&nbsp;{{req|safe}}</label>
+				  <input type="text" class="form-control" name="year_completed" v-validate="'required'" data-vv-scope="section-3" v-model="year_completed" v-mask="'####'" size="6">
+					{{ m.errorsFor('section-3.year_completed') }}
+				</div>
+				<div class="form-group">
+					<div class="checkbox">
+						<label><input type="checkbox" name="work_unpublished" value="unpublished" v-model="work_unpublished">This work has not yet been published</label>
+					</div>
+				</div>
+				<div v-if="work_unpublished == ''">
+					<div class="form-group">
+						<label for="work_publication_date">What date was this particular work first published?&nbsp;{{req|safe}}</label>
+						<input type="date" class="form-control" name="work_publication_date" v-model="work_publication_date" v-validate="'required'" data-vv-scope="section-3">
+						{{ m.errorsFor('section-3.work_publication_date') }}
+					</div>
+					<div class="form-group">
+						<label for="work_publication_nation">What is the nation in which the work was first published?&nbsp;{{req|safe}}</label>
+						<br>
+						<select class="selectpicker" data-live-search="true" name="work_publication_nation" v-model="work_publication_nation" v-validate="'required'" data-vv-scope="section-3">
+							{% for item in countries %}<option value="{{item.name}}">{{item.name}}</option>{% endfor %}
+						</select>
+						{{ m.errorsFor('section-3.work_publication_nation') }}
+					</div>
+				</div>
+			</section>
+
+			<section class="form-section" v-show="step == 4" data-vv-scope="section-4">
+				<h2 class="form-section-label"><span class="circle">4.</span> Copyright Claimants</h2>
+
+				<p class="form-direction">We now need to gather the claimants. You will be asked to provide a name and an address for each claimant.</p>
+
+				<div class="claimant-listing" v-if="claimants.length">
+					<h3>Claimant List</h3>
+					<table class="table">
+						<thead>
+							<tr>
+								<th>Claimant Name</th>
+								<th>Claimant Address</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="(item, index) in claimants">
+								<td>{%raw%}{{item.claimant_name}}{%endraw%}</td>
+								<td>
+									<address>
+										<div>{%raw%}{{item.claimant_address_1}}{%endraw%}</div>
+										<div v-if="item.claimant_address_2 != ''">{%raw%}{{item.claimant_address_2}}{%endraw%}</div>
+										<div>{%raw%}{{item.claimant_city}}, {{item.claimant_state}} {{item.claimant_postal}}{%endraw%}</div>
+										<div>{%raw%}{{item.claimant_country}}{%endraw%}</div>
+									</address>
+								</td>
+								<td><button type="button" class="btn btn-default btn-sm" v-on:click="removeClaimant(index)"><i class="fa fa-remove"></i> Remove</button></td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="form-actions" v-if="claimant_count === claimants.length">
+						<button type="button" class="btn btn-success" v-on:click="increaseClaimantCount"><i class="fa fa-user-plus"></i> Add another claimant</button>
+					</div>
+				</div>
+
+				<fieldset id="claimant_form" v-if="claimants.length < claimant_count">
+					<legend>Add a claimant</legend>
+
+					<div class="form-sub-sections">
+						<div class="form-sub-section" v-show="substeps.claimant.step == 1">
+							<div class="form-group">
+								<div class="form-label"><span v-if="authors.length > 1">Is this claimant one of the authors?</span><span v-else>Is this claimant the author?</span>&nbsp;{{req|safe}}</div>
+								<div class="checkbox">
+									<label><input type="checkbox" name="claimant_form_is_author" v-model="claimant_form.claimant_is_author" value="yes"> Yes, Claimant is Author</label>
+								</div>
+							</div>
+							<div class="form-group" v-if="claimant_form.claimant_is_author == true">
+							  <label for="claimant_author">Select the author you would like to add as a claimant:</label>
+							  <div v-for="(author, index) in authors_available_as_claimants" class="radio">
+							  	<label><input type="radio" name="claimant_author" v-model="claimant_form.claimant_author" :value="index"> {%raw%}{{author.author_name}}{%endraw%}</label>
+							  </div>
+							  <p class="help-block">To add all of the authors, add the first then click "Add new claimant" to add the additional claimants.</p>
+							</div>
+						</div>
+
+					<div class="form-sub-sections">
+						<div class="form-sub-section" v-show="substeps.claimant.step == 2">
+							<div class="form-group">
+								<label for="claimant-form-name">What is this claimant's name?&nbsp;{{req|safe}}</label>
+								<input type="text" name="claimant-form-name" class="form-control" v-model="claimant_form.claimant_name">
+							</div>
+						</div>
+
+						<div class="form-sub-section" v-show="substeps.claimant.step == 3">
+							<div class="form-group">
+								<div class="form-label">What is the claimant, {%raw%}{{claimant_form.claimant_name + "'s"}}{%endraw%}, address?&nbsp;{{req|safe}}</div>
+							</div>
+							<div class="row">
+								{{ m.formgroup('claimant-form-address-1', 'Address 1', true, 'col-sm-12', null, null, null, 'v-model="claimant_form.claimant_address_1"') }}
+								{{ m.formgroup('claimant-form-address-2', 'Address 2', false, 'col-sm-12', null, null, null, 'v-model="claimant_form.claimant_address_2"') }}
+								{{ m.formgroup('claimant-form-city', 'City', true, 'col-sm-6', null, null, null, 'v-model="claimant_form.claimant_city"') }}
+								<div class="form-group col-sm-4">
+								  <label for="claimant-form-state">State</label>
+									<select class="selectpicker" name="claimant-form-state" data-live-search="true" v-model="claimant_form.claimant_state">
+										{% for key, value in states %}<option value="{{key}}">{{value}}</option>{% endfor %}
+									</select>
+								</div>
+								{{ m.formgroup('claimant-form-postal', 'Zip Code', true, 'col-sm-2', null, null, null, 'v-model="claimant_form.claimant_postal" maxlength="5" v-mask="\'#####\'"') }}
+							</div>
+						</div>
+
+						<div class="form-sub-section" v-show="substeps.claimant.step == 4">
+							<div class="form-group">
+							  <label for="claimant_transfer_info">Since this claimant is not listed as an author, please provide a brief statement of how the claimant obtained ownership of the copyright.</label>
+								<textarea class="form-control" rows="4" name="claimant_transfer_info" v-model="claimant_form.claimant_transfer"></textarea>
+							</div>
+						</div>
+
+						<div class="form-actions">
+							<button type="button" class="btn btn-info pull-right" v-show="substeps.claimant.step < substeps.claimant.total" v-on:click="stepNext('claimant')">Next <i class="fa fa-hand-o-right"></i></button>
+							<button type="button" v-show="substeps.claimant.step == substeps.claimant.total" v-on:click="addClaimant" class="btn btn-success pull-right"><i class="fa fa-check"></i> Add Claimant</button>
+							<button type="button" class="btn btn-default pull-left" v-show="substeps.claimant.step > 1" v-on:click="stepBack('claimant')"><i class="fa fa-hand-o-left"></i> Back</button>
+						</div>
+					</div>
+				</fieldset>
+
+			</section>
+
+			<section class="form-section" v-show="step == 5" data-vv-scope="section-5">
+				<h2 class="form-section-label"><span class="circle">5.</span> Previous Registration</h2>
+
+				<div class="form-group">
+				  <div class="form-label">Has registration for this work, or for an earlier version of this work, already been made in the Copyright Office?&nbsp;{{req|safe}}</div>
+				  <div class="radio">
+				  	<label><input type="radio" name="previous_registration" v-model="previous_registration" value="Yes" v-validate="'required'" data-vv-scope="section-5"> Yes</label>
+					</div>
+					<div class="radio">
+						<label><input type="radio" name="previous_registration" v-model="previous_registration" value="No" v-validate="'required'" data-vv-scope="section-5"> No</label>
+					</div>
+					{{ m.errorsFor('section-5.previous_registration') }}
+				</div>
+				<div class="row" v-if="previous_registration == 'Yes'">
+					<div class="form-group col-sm-6">
+						<label for="previous_reg_number">Previous Registration Number&nbsp;{{req|safe}}</label>
+						<input type="text" class="form-control" name="previous_reg_number" v-model="previous_reg_number" v-validate="'required'" data-vv-scope="section-5">
+						{{ m.errorsFor('section-5.previous_reg_number') }}
+					</div>
+					<div class="form-group col-sm-6">
+						<label for="previous_reg_year">Previous Registration Year&nbsp;{{req|safe}}</label>
+						<input type="text" class="form-control" name="previous_reg_year" v-model="previous_reg_year" v-validate="'required'" data-vv-scope="section-5" v-mask="'####'" maxlength="4">
+						{{ m.errorsFor('section-5.previous_reg_year') }}
+					</div>
+				</div>
+				<div class="form-group" v-if="previous_registration == 'Yes'">
+					<div class="form-label">Why is another registration being sought?&nbsp;{{req|safe}}</div>
+					<div class="radio">
+						<label><input type="radio" name="previous_reason" v-model="previous_reason" value="unpublished"> This work was previously registered in unpublished form and now has been published for the first time.</label>
+					</div>
+					<div class="radio">
+						<label><input type="radio" name="previous_reason" v-model="previous_reason" value="new_author"> This is the first application submitted by this author as copyright claimant.</label>
+					</div>
+					<div class="radio">
+						<label><input type="radio" name="previous_reason" v-model="previous_reason" value="changed_version"> This is a changed version of the work.</label>
+					</div>
+				</div>
+			</section>
+
+			<section class="form-section" v-show="step == 6" data-vv-scope="section-6">
+				<h2 class="form-section-label"><span class="circle">6.</span> Previous Work or Compilation</h2>
+
+				<div class="form-group">
+				  <label for="changed_type">What type of changed work is this?</label>
+					<div class="radio">
+						<label><input type="radio" name="changed_type" v-model="changed_type" value="Changed Version">Changed Version</label>
+					</div>
+					<div class="radio">
+						<label><input type="radio" name="changed_type" v-model="changed_type" value="Compilation">Compilation</label>
+					</div>
+					<div class="radio">
+						<label><input type="radio" name="changed_type" v-model="changed_type" value="Derivative Work">Derivative Work</label>
+					</div>
+				</div>
+
+				<div v-if="changed_type === 'Derivative Work' || changed_type === 'Compilation'">
+					<hr>
+					<div class="form-label">Preexisting Material</div>
+					<template v-for="item, index in preexisting_materials">
+						<div class="form-flex">
+							<div class="form-group form-flex-grow">
+								<label :for="'preexisting_material_' + index" class="sr-only">Preexisting Material {%raw%}{{index}}{%endraw%}</label>
+								<input type="text" :name="'preexisting_material_' + index" class="form-control" v-model="preexisting_materials[index]" placeholder="Add material description...">
+							</div>
+							<div class="form-group" v-if="index > 0 || preexisting_materials.length > 1">
+								<button type="button" v-on:click="removePreMaterial(index)" class="btn btn-sm btn-default"><i class="fa fa-remove"></i> Remove</button>
+							</div>
+						</div>
+					</template>
+					<p><button type="button" v-on:click="addPreMaterial()" class="btn btn-sm btn-success"><i class="fa fa-plus"></i> Add Item</button></p>
+				</div>
+
+				<div v-if="changed_type !== ''">
+					<hr>
+					<div class="form-label">Material Added to This Work</div>
+					<template v-for="item, index in materials_added">
+						<div class="form-flex">
+							<div class="form-group form-flex-grow">
+								<label :for="'materials_added_' + index" class="sr-only">Preexisting Material {%raw%}{{index}}{%endraw%}</label>
+								<input type="text" :name="'materials_added_' + index" class="form-control" v-model="materials_added[index]" placeholder="Add description of changes...">
+							</div>
+							<div class="form-group" v-if="index > 0 || materials_added.length > 1">
+								<button type="button" v-on:click="removeAddedMaterial(index)" class="btn btn-sm btn-default"><i class="fa fa-remove"></i> Remove</button>
+							</div>
+						</div>
+					</template>
+					<p><button type="button" v-on:click="addAddedMaterial()" class="btn btn-sm btn-success"><i class="fa fa-plus"></i> Add Item</button></p>
+				</div>
+			</section>
+
+			<section class="form-section" v-show="step == 7" data-vv-scope="section-7">
+				<h2 class="form-section-label"><span class="circle">7.</span> Deposit Account</h2>
+
+				<div class="form-group">
+				  <div class="form-label">
+						Will the registration fee be charged to a deposit account established in the Copyright Office?
+					</div>
+				  <div class="radio">
+				  	<label><input type="radio" name="use_deposit_account" v-model="use_deposit_account" value="yes"> Yes, this registration will be charged to a deposit account.</label>
+				  </div>
+					<div class="radio">
+				  	<label><input type="radio" name="use_deposit_account" v-model="use_deposit_account" value="no"> No, it will not be charged to a deposit account.</label>
+				  </div>
+				</div>
+
+				<div class="row" v-if="use_deposit_account == 'yes'">
+					{{ m.formgroup('deposit_account_name', 'Name on Deposit Account', true, 'col-sm-6', null, null, null, ' v-model="deposit_account_name" v-validate="\'required\'" data-vv-scope="section-7"') }}
+					{{ m.formgroup('deposit_account_number', 'Deposit Account Number', true, 'col-sm-6', null, null, null, ' v-model="deposit_account_number" v-validate="\'required\'" data-vv-scope="section-7"') }}
+				</div>
+			</section>
+
+			<section class="form-section" v-show="step == 8" data-vv-scope="section-8">
+				<h2 class="form-section-label"><span class="circle">8.</span> Correspondence</h2>
+				<p class="form-direction">Please provide contact information so we can communicate about this registration.</p>
+
+				<fieldset>
+					<legend>Correspondence Address&nbsp;{{req|safe}}</legend>
+					<div class="row">
+						{{ m.formgroup('correspondence_address_1', 'Address 1', true, 'col-sm-12', null, null, null, 'v-model="correspondence_address_1"') }}
+						{{ m.formgroup('correspondence_address_2', 'Address 2', false, 'col-sm-12', null, null, null, 'v-model="correspondence_address_2"') }}
+						{{ m.formgroup('correspondence_city', 'City', true, 'col-sm-6', null, null, null, 'v-model="correspondence_city"') }}
+						<div class="form-group col-sm-4">
+							<label for="correspondence_state">State</label>
+							<select class="selectpicker" name="correspondence_state" data-live-search="true" v-model="correspondence_state">
+								{% for key, value in states %}<option value="{{key}}">{{value}}</option>{% endfor %}
+							</select>
+						</div>
+						{{ m.formgroup('correspondence_postal', 'Zip Code', true, 'col-sm-2', null, null, null, 'v-model="correspondence_postal" maxlength="5" v-mask="\'#####\'"') }}
+					</div>
+				</fieldset>
+				<hr>
+				<div class="row">
+					<div class="form-group col-lg-4 col-sm-12">
+					  <label for="correspondence_email">Email Address&nbsp;{{req|safe}}</label>
+					  <input type="email" class="form-control" name="correspondence_email" v-model="correspondence_email" v-validate="'required|email'">
+						{{ m.errorsFor('section-8.correspondence_email') }}
+					</div>
+
+					<div class="form-group col-lg-4 col-sm-6">
+					  <label for="correspondence_phone">Daytime Phone&nbsp;{{req|safe}}</label>
+					  <input type="text" class="form-control" name="correspondence_phone" v-model="correspondence_phone" v-validate="'required'" v-mask="'(###) ###-####'" placeholder="(###) ###-####">
+						{{ m.errorsFor('section-8.correspondence_phone') }}
+					</div>
+
+					<div class="form-group col-lg-4 col-sm-6">
+					  <label for="correspondence_fax">Fax</label>
+					  <input type="text" class="form-control" name="correspondence_fax" v-model="correspondence_fax" v-mask="'(###) ###-####'" placeholder="(###) ###-####">
+					</div>
+				</div>
+			</section>
+
+			<section class="form-section" v-show="step == 9" data-vv-scope="section-9">
+				<h2 class="form-section-label"><span class="circle">9.</span> Certificate Delivery</h2>
+				<p class="form-direction">There are two options for how you can receive your certificate. You can receive it electronically by email or as a paper certificate through US Mail.</p>
+
+				<div class="form-group">
+				  <div class="form-label">How would you like to receive your certificate?&nbsp;{{req|safe}}</div>
+				  <div class="radio">
+				  	<label><input type="radio" name="certificate_delivery" v-model="certificate_delivery" value="email" v-validate="'required'" data-vv-scope="section-9"> Electronically through email</label>
+				  </div>
+					<div class="radio">
+				  	<label><input type="radio" name="certificate_delivery" v-model="certificate_delivery" value="usmail" v-validate="'required'" data-vv-scope="section-9"> Paper certificate through US Mail</label>
+				  </div>
+					<p class="help-block">The certificate will be sent to the address provided in the previous step.</p>
+				</div>
+				<div class="form-group" v-if="certificate_delivery == 'email'">
+					<div class="form-label">Certificate will be emailed to:</div>
+				  {%raw%}{{correspondence_email}}{%endraw%}
+				</div>
+				<div class="form-group" v-if="certificate_delivery == 'usmail'">
+					<div class="form-label">Certificate will be mailed to:</div>
+					<address>
+						<div>{%raw%}{{correspondence_address_1}}{%endraw%}</div>
+						<div v-if="correspondence_address_2 != ''">{%raw%}{{correspondence_address_2}}{%endraw%}</div>
+						<div>{%raw%}{{correspondence_city}}, {{correspondence_state}} {{correspondence_postal}}{%endraw%}</div>
+					</address>
+				</div>
+			</section>
+
+			<section class="form-section" v-show="step == 10" data-vv-scope="section-10">
+				<h2 class="form-section-label"><span class="circle">10.</span> Review</h2>
+				<p class="form-direction">Please review the information you have entered so far before submitting.</p>
+
+				<h3>Work Title <button type="button" v-on:click="stepTo(1)" class="btn btn-sm btn-default pull-right">Edit<span class="sr-only"> Work Title</span></button></h3>
+				<table class="table table-narrow">
+					<tbody>
+						<tr>
+							<th scope="row">Title of Work</th>
+							<td>{%raw%}{{work_title}}{%endraw%}</td>
+						</tr>
+						<tr v-show="alt_title_type != ''">
+							<th scope="row">Alternate Titles</th>
+							<td>{%raw%}{{alt_title}}{%endraw%}</td>
+						</tr>
+					</tbody>
+				</table>
+
+				<h3>Authors <button type="button" v-on:click="stepTo(2)" class="btn btn-sm btn-default pull-right">Edit<span class="sr-only"> Authors</span></button></h3>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Author Name</th>
+							<th>Work for Hire</th>
+							<th>Birth Year &amp; Death Year</th>
+							<th>Author Nationality</th>
+							<th>Nature of Authorship</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="(author, index) in authors">
+							<td>{%raw%}{{author.author_name}}{%endraw%}</td>
+							<td>{%raw%}{{author.author_wfh}}{%endraw%}</td>
+							<td>{%raw%}{{author.author_birth_year}}{{ author.author_death_year ? ' &ndash; ' + author.author_death_year : ''}}{%endraw%}</td>
+							<td>{%raw%}{{author.author_nationality}} {{'('+author.author_nationality_type+')'}}{%endraw%}</td>
+							<td>{%raw%}{{author.author_nature}}{%endraw%}</td>
+						</tr>
+					</tbody>
+				</table>
+
+				<h3>Registration Dates <button type="button" v-on:click="stepTo(3)" class="btn btn-sm btn-default pull-right">Edit<span class="sr-only"> Registration Dates</span></button></h3>
+				<table class="table table-narrow">
+					<tbody>
+						<tr>
+							<th scope="row">Year Work Completed</th>
+							<td>{%raw%}{{year_completed}}{%endraw%}</td>
+						</tr>
+						<tr>
+							<th scope="row">Date Published</th>
+							<td>{%raw%}{{work_publication_date}}{{work_unpublished ? 'This work has not yet been published' : ''}}{%endraw%}</td>
+						</tr>
+						<tr>
+							<th scope="row">Nation in which First Published</th>
+							<td>{%raw%}{{work_publication_nation}}{%endraw%}</td>
+						</tr>
+					</tbody>
+				</table>
+
+				<h3>Claimant List <button type="button" v-on:click="stepTo(4)" class="btn btn-sm btn-default pull-right">Edit<span class="sr-only"> Claimants</span></button></h3>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Claimant Name</th>
+							<th>Claimant Address</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="(item, index) in claimants">
+							<td>{%raw%}{{item.claimant_name}}{%endraw%}</td>
+							<td>
+								<address>
+									<div>{%raw%}{{item.claimant_address_1}}{%endraw%}</div>
+									<div v-if="item.claimant_address_2 != ''">{%raw%}{{item.claimant_address_2}}{%endraw%}</div>
+									<div>{%raw%}{{item.claimant_city}}, {{item.claimant_state}} {{item.claimant_postal}}{%endraw%}</div>
+									<div>{%raw%}{{item.claimant_country}}{%endraw%}</div>
+								</address>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+
+				<h3>Previous Registration <button type="button" v-on:click="stepTo(5)" class="btn btn-sm btn-default pull-right">Edit<span class="sr-only"> Previous Registration Information</span></button></h3>
+				<table class="table table-narrow" v-if="previous_registration === 'Yes'">
+					<tbody>
+						<tr>
+							<th scope="row">Previous Registration Number</th>
+							<td>{%raw%}{{previous_reg_number}}{%endraw%}</td>
+						</tr>
+						<tr>
+							<th scope="row">Previous Registration Year</th>
+							<td>{%raw%}{{previous_reg_year}}{{work_unpublished ? 'This work has not yet been published' : ''}}{%endraw%}</td>
+						</tr>
+						<tr>
+							<th scope="row">Type of Changed Work</th>
+							<td>{%raw%}{{changed_type}}{%endraw%}</td>
+						</tr>
+						<tr v-if="preexisting_materials.length > 0">
+							<th scope="row">Preexisting Materials</th>
+							<td>
+								<div v-for="item in preexisting_materials">
+									{%raw%}{{item}}{%endraw%}
+								</div>
+							</td>
+						</tr>
+						<tr v-if="materials_added.length > 0">
+							<th scope="row">Materials Added to this Work</th>
+							<td>
+								<div v-for="item in materials_added">
+									{%raw%}{{item}}{%endraw%}
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<p v-if="previous_registration === 'No'">This work had no previously registered version.</p>
+
+				<h3>Deposit Account <button type="button" v-on:click="stepTo(7)" class="btn btn-sm btn-default pull-right">Edit<span class="sr-only"> Deposit Account Information</span></button></h3>
+				<p v-if="use_deposit_account === 'no'">This registration will not be charged to a deposit account.</p>
+				<table class="table table-narrow" v-if="use_deposit_account === 'yes'">
+					<tbody>
+						<tr>
+							<th scope="row">Name on Deposit Account</th>
+							<td>{%raw%}{{deposit_account_name}}{%endraw%}</td>
+						</tr>
+						<tr>
+							<th scope="row">Deposit Account Number</th>
+							<td>{%raw%}****{{deposit_account_number.slice(-4, deposit_account_number.length)}}{%endraw%}</td>
+						</tr>
+					</tbody>
+				</table>
+
+				<h3>Correspondence <button type="button" v-on:click="stepTo(8)" class="btn btn-sm btn-default pull-right">Edit<span class="sr-only"> Correspondence Information</span></button></h3>
+				<table class="table table-narrow">
+					<tbody>
+						<tr>
+							<th scope="row">Address</th>
+							<td>
+								<address>
+									<div>{%raw%}{{correspondence_address_1}}{%endraw%}</div>
+									<div v-if="correspondence_address_2 != ''">{%raw%}{{correspondence_address_2}}{%endraw%}</div>
+									<div>{%raw%}{{correspondence_city}}, {{correspondence_state}} {{correspondence_postal}}{%endraw%}</div>
+								</address>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">Email</th>
+							<td>{%raw%}{{correspondence_email}}{%endraw%}</td>
+						</tr>
+						<tr>
+							<th scope="row">Phone</th>
+							<td>{%raw%}{{correspondence_phone}}{%endraw%}</td>
+						</tr>
+						<tr>
+							<th scope="row">Fax</th>
+							<td>{%raw%}{{correspondence_fax}}{%endraw%}</td>
+						</tr>
+					</tbody>
+				</table>
+
+				<h3>Certificate <button type="button" v-on:click="stepTo(9)" class="btn btn-sm btn-default pull-right">Edit<span class="sr-only"> Certificate Delivery</span></button></h3>
+				<p v-if="certificate_delivery === 'email'">Certificate will be delivered <strong>electronically via email</strong>.</p>
+				<p v-if="certificate_delivery === 'usmail'">Certificate will be delivered in <strong>paper format via US Mail</strong>.</p>
+
+				<h3><strong>Fee</strong></h3>
+				<div class="alert alert-info">
+					The fee for this filling will be <strong>{% raw %}{{fee_formatted}}{% endraw %}</strong>.
+				</div>
+			</section>
+
+			<section class="form-section" v-show="step == 11" data-vv-scope="section-11">
+				<h2 class="form-section-label">Certification</h2>
+				<p class="form-direction">To finalize this registration, we need your certification.</p>
+
+				<div class="form-group">
+					<div class="form-label">I, the undersigned, hereby certify that I am the...&nbsp;{{req|safe}}</div>
+					<select class="form-control" name="certification_type" v-model="certification_type" v-validate="'required'" data-vv-scope="section-11">
+						<option selected>Select...</option>
+						<option value="author">author</option>
+						<option value="owner of exclusive right(s)">owner of exclusive right(s)</option>
+						<option value="other copyright claimant">other copyright claimant</option>
+						<option value="authorized agent">authorized agent...</option>
+					</select>
+					{{ m.errorsFor('section-11.certification_type') }}
+				</div>
+
+				<div class="form-group" v-if="certification_type === 'authorized agent'" style="margin-left:1.25em;">
+					<label for="authorized_agent_of">I am an authorized agent of</label>
+					<input type="text" class="form-control" name="authorized_agent_of" v-model="authorized_agent_of" v-validate="'required'" data-vv-scope="section-11">
+					{{ m.errorsFor('section-11.authorized_agent_of') }}
+				</div>
+
+				<div class="form-group">
+					<p class="form-label">&hellip;of the work identified in this application and that the statements made by me in this application are correct to the best of my knowledge.</p>
+				</div>
+
+				<hr>
+				<div class="form-group">
+				  <label for="signature">Type your name below to agree with the above statement:</label>
+				  <input type="text" class="form-control" name="signature" v-model="signature" v-validate="'required'" data-vv-scope="section-11">
+					{{ m.errorsFor('section-11.signature') }}
+				</div>
+			</section>
+
+			<section class="form-section" v-show="step == 12" data-vv-scope="section-12">
+				<h2 class="form-section-label">Pay &amp; Submit</h2>
+				<p class="form-direction">The final step of the registration process is paying the registration fee. <strong>Your fee for this registration will be {% raw %}{{fee_formatted}}{% endraw %}</strong>.</p>
+
+				<div class="alert alert-info" v-if="use_deposit_account === 'yes'">
+					The fee for this transaction will be charged to the deposit account entered above.
+				</div>
+
+				<div v-show="use_deposit_account === 'no'">
+					<fieldset style="max-width:480px; margin-left:auto; margin-right:auto;">
+						<legend>Credit Card Details</legend>
+						{{ m.formgroup('cc_name', 'Name on Card', true) }}
+						<div class="form-group">
+							<label for="cc_number">Credit card number&nbsp;{{req|safe}}</label>
+							<input type="text" name="cc_number" v-model="cc_number" placeholder="#### #### #### ####" v-mask="'#### #### #### ####'" value="" class="form-control form-cc">
+						</div>
+						<div class="row">
+							{{ m.formgroup('cc_exp', 'Exp. Date', true, 'col-sm-4', 'MM/YY', null, null, 'v-model="cc_exp" v-mask="\'##/##\'" maxlength="5"') }}
+							<div class="form-group col-sm-4">
+								<label for="cc_cvv"><acronym title="Security Code">CVC</acronym>&nbsp;{{req|safe}}</label>
+								<input type="password" name="cc_cvv" id="cc_cvv" v-model="cc_cvv" placeholder="###" value="" maxlength="3" class="form-control">
+							</div>
+							<div class="form-group col-sm-4">
+								<label for="cc_billing_zip">Zip&nbsp;{{req|safe}}</label>
+								<input type="text" class="form-control" name="cc_billing_zip" v-model="cc_billing_zip" v-mask="'#####'" maxlength="5">
+							</div>
+						</div>
+						{# <div class="row">
+							{{ m.formgroup('cc_billing_street', 'Address', true, 'col-sm-6') }}
+							{{ m.formgroup('cc_billing_city', 'City', true, 'col-sm-3') }}
+							<div class="form-group col-sm-3">
+							  <label for="cc_billing_state">State&nbsp;{{req|safe}}</label>
+							  <select class="form-control" name="cc_billing_state" v-model="cc_billing_state">
+							  	{% for key, value in states %}
+									<option value="{{key}}">{{value}}</option>
+									{% endfor %}
+							  </select>
+							</div>
+						</div> #}
+					</fieldset>
+				</div>
+
+			</section>
+
+			<div class="wizard-section-control">
+				<div class="pull-right">
+					<button type="submit" v-if="step == steps_total" class="btn btn-primary btn-lg"><i class="fa fa-check-circle"></i> Submit</button>
+				</div>
+				<div class="pull-right">
+					<button type="button" v-show="step < steps_total" v-on:click="stepNext()" class="btn btn-primary btn-lg">Next <i class="fa fa-angle-right"></i></button>
+				</div>
+				<div class="pull-left">
+					<a href="index.html" v-if="step === 1" class="btn btn-default btn-lg"><i class="fa fa-close"></i> Cancel</a>
+				</div>
+				<div class="pull-left">
+					<button type="button" v-show="step > 1" v-on:click="stepBack()" class="btn btn-default btn-lg"><i class="fa fa-angle-left"></i> Back</button>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+{% endblock %}
+
+{% block pagejs %}
+<script type="text/javascript" src="js/vue.js"></script>
+<script type="text/javascript" src="js/vee-validate.min.js"></script>
+<script type="text/javascript" src="js/v-mask.min.js"></script>
+<script type="text/javascript" src="js/jquery.creditCardValidator.js"></script>
+<script>
+	const errorDictionary = {
+		en: {
+			messages: {
+				required: () => 'This field is required.'
+			}
+		}
+	}
+	const validateConfig = {
+		delay: 500,
+		classes: true,
+		locale: 'en',
+		dictionary: errorDictionary
+	};
+	Vue.use(VeeValidate, validateConfig);
+	Vue.use(VueMask.VueMaskPlugin);
+
+	// Main app
+	var app = new Vue({
+		el: '#form',
+		data: {
+			// step control
+			step: 1,
+			substeps: {
+				author: {
+					step: 1,
+					total: document.querySelectorAll('#author_form .form-sub-section').length,
+				},
+				claimant: {
+					step: 1,
+					total: document.querySelectorAll('#claimant_form .form-sub-section').length,
+				}
+			},
+			steps_total: document.querySelectorAll('.form-section').length,
+			steps: [],
+			// tracked values
+			work_title: '',
+			alt_title_type: '',
+			alt_title: '',
+			authors: [],
+			year_completed: '',
+			work_unpublished: '',
+			work_publication_date: '',
+			work_publication_nation: 'United States',
+			claimants: [],
+			previous_registration: '',
+			previous_reason: '',
+			previous_reg_number: '',
+			previous_reg_year: '',
+			changed_type: '',
+			preexisting_materials: [''],
+			materials_added: [''],
+			use_deposit_account: '',
+			deposit_account_name: '',
+			deposit_account_number: '',
+			correspondence_address_1: '',
+			correspondence_address_2: '',
+			correspondence_city: '',
+			correspondence_state: '',
+			correspondence_postal: '',
+			correspondence_email: '',
+			correspondence_phone: '',
+			correspondence_fax: '',
+			certificate_delivery: '',
+			certification_type: '',
+			authorized_agent_of: '',
+			signature: '',
+			cc_name: '',
+			cc_number: '',
+			cc_exp: '',
+			cc_cvv: '',
+			cc_billing_street: '',
+			cc_billing_city: '',
+			cc_billing_state: '',
+			cc_billing_zip: '',
+			// control vars
+			author_count: 1,
+			claimant_count: 1,
+			// schema
+			author_form: {
+				author_identity: 'real',
+				author_anon_option: '',
+				author_pseudo_option: '',
+				author_wfh: 'no',
+				author_name: '',
+				author_pseudonym: '',
+				author_birth_year: '',
+				author_death_year: '',
+				author_nationality_type: 'Citizen',
+				author_nationality: 'United States',
+				author_nature: ''
+			},
+			claimant_form: {
+				claimant_is_author: false,
+				claimant_author: '',
+				claimant_name: '',
+				claimant_address_1: '',
+				claimant_address_2: '',
+				claimant_city: '',
+				claimant_state: '',
+				claimant_postal: '',
+				claimant_country: '',
+				claimant_transfer: ''
+			}
+		},
+		watch: {
+			'author_form.author_identity': function(val) {
+				if (val == 'anonymous') {
+					this.author_form.author_pseudo_option = '';
+				} else if (val == 'pseudonymous') {
+					this.author_form.author_anon_option = '';
+				} else {
+					this.author_form.author_pseudo_option = '';
+					this.author_form.author_anon_option = '';
+				}
+			},
+			'author_form.author_anon_option': function(val) {
+				if (val == 'anonymous') {
+					this.author_form.author_name = 'Anonymous';
+				} else {
+					this.author_form.author_name = '';
+				}
+			},
+			'claimant_form.claimant_author': function(val) {
+				if (typeof val != 'undefined' && val != '') {
+					this.claimant_form.claimant_name = this.authors[val].author_name;
+				}
+			}
+		},
+		computed: {
+			hidden_steps: function() {
+				var hidden = [];
+				if (this.previous_reason != 'changed_version') {
+					hidden.push(6);
+				}
+				return hidden;
+			},
+			hidden_steps_author: function() {
+				var hidden = [];
+				if (this.author_form.author_identity != 'real' || this.author_form.author_anon_option == 'anonymous') {
+					hidden.push(2);
+				}
+				if (this.author_form.author_anon_option == 'blank' || this.author_form.author_anon_option == 'anonymous' || this.author_form.author_pseudo_option == 'blank') {
+					hidden.push(3);
+				}
+				if (author_form.author_wfh == 'yes') {
+					hidden.push(4);
+				}
+				return hidden;
+			},
+			hidden_steps_claimant: function() {
+				var hidden = [];
+				if (this.authors_available_as_claimants.length === 0) {
+					hidden.push(1);
+				}
+				if (this.claimant_form.claimant_author != '') {
+					hidden.push(2);
+				}
+				if (this.claimant_form.claimant_is_author) {
+					hidden.push(4);
+				}
+				return hidden;
+			},
+			authors_available_as_claimants: function() {
+				return this.authors.filter(function(u) {
+					return !u.used_as_claimant;
+				});
+			},
+			fee: function() {
+				if (this.authors.length === 1 && this.claimants.length === 1) {
+					if (this.claimants[0].claimant_is_author) {
+						return 35;
+					} else {
+						return 55;
+					}
+				} else {
+					return 55;
+				}
+			},
+			fee_formatted: function() {
+				return '$' + this.fee + '.00';
+			}
+		},
+		methods: {
+			// Author Methods
+			addAuthor: function(){
+				var newAuthor = {
+					author_identity: this.author_form.author_identity,
+					author_wfh: this.author_form.author_wfh,
+					author_name: this.getAuthorName(),
+					author_birth_year: this.author_form.author_birth_year,
+					author_death_year: this.author_form.author_death_year,
+					author_nationality_type: this.author_form.author_nationality_type,
+					author_nationality: this.author_form.author_nationality,
+					author_nature: this.author_form.author_nature,
+					used_as_claimant: false
+				}
+				this.authors.push(newAuthor);
+				this.setBlankAuthor();
+			},
+			increaseAuthorCount: function() {
+				this.author_count++;
+			},
+			setBlankAuthor: function() {
+				this.substeps.author.step = 1;
+				this.author_form = {
+					author_identity: 'real',
+					author_wfh: 'no',
+					author_name: '',
+					author_pseudonym: '',
+					author_birth_year: '',
+					author_death_year: '',
+					author_nationality_type: 'Citizen',
+					author_nationality: 'United States',
+					author_nature: ''
+				};
+			},
+			removeAuthor: function(index) {
+				var author = this.authors[index].author_name;
+				var remove = confirm('Are you sure you want to remove ' + author + '?');
+				if (remove) {
+					this.authors.splice(index, 1);
+					this.author_count--;
+				}
+			},
+			clearAuthorForm: function() {
+				var reset = confirm('Are you sure you want to cancel adding an author? You will lose the data you have entered.');
+				if (reset) {
+					this.setBlankAuthor();
+					this.author_count--;
+				}
+			},
+			// Claimant Methods
+			addClaimant: function() {
+				var newClaimant = {
+					claimant_name: this.claimant_form.claimant_name,
+					claimant_address_1: this.claimant_form.claimant_address_1,
+					claimant_address_2: this.claimant_form.claimant_address_2,
+					claimant_city: this.claimant_form.claimant_city,
+					claimant_state: this.claimant_form.claimant_state,
+					claimant_postal: this.claimant_form.claimant_postal,
+					claimant_country: this.claimant_form.claimant_country,
+					claimant_transfer: this.claimant_form.claimant_transfer,
+					claimant_is_author: this.cliamant_form.claimant_is_author
+				};
+				this.claimants.push(newClaimant);
+				this.authors[this.claimant_form.claimant_author].used_as_claimant = true;
+				this.setBlankClaimant();
+			},
+			increaseClaimantCount: function() {
+				this.claimant_count++;
+				setTimeout(function(){
+					$('.selectpicker').selectpicker();
+				}, 500);
+			},
+			setBlankClaimant: function() {
+				this.substeps.claimant.step = 1;
+				this.claimant_form = {
+					claimant_is_author: false,
+					claimant_author: '',
+					claimant_name: '',
+					claimant_address_1: '',
+					claimant_address_2: '',
+					claimant_city: '',
+					claimant_state: '',
+					claimant_postal: '',
+					claimant_country: ''
+				};
+			},
+			removeClaimant: function(index) {
+				var claimant = this.claimants[index].claimant_name;
+				var remove = confirm('Are you sure you want to remove ' + claimant + '?');
+				if (remove) {
+					this.claimants.splice(index, 1);
+					this.claimant_count--;
+				}
+			},
+			clearClaimantForm: function() {
+				var reset = confirm('Are you sure you want to cancel adding a claimant? You will lose the data you have entered.');
+				if (reset) {
+					this.setBlankClaimant();
+					this.claimant_count--;
+				}
+			},
+			// Materials
+			addPreMaterial: function() {
+				this.preexisting_materials.push('');
+			},
+			removePreMaterial: function(index) {
+				this.preexisting_materials.splice(index, 1);
+			},
+			addAddedMaterial: function() {
+				this.materials_added.push('');
+			},
+			removeAddedMaterial: function(index) {
+				this.materials_added.splice(index, 1);
+			},
+			// Step Controls
+			stepNext : function(scope) {
+				if (typeof scope !== 'undefined') {
+					if (this.substeps[scope].step < this.substeps[scope].total) {
+						this.substeps[scope].step++;
+						if (this['hidden_steps_'+scope].indexOf(this.substeps[scope].step) > -1) {
+							this.stepNext(scope);
+						} else {
+							this.focusTop();
+						}
+					}
+				} else {
+					if (this.step < this.steps_total) {
+						var section = 'section-' + this.step;
+						this.$validator.validateAll(section).then(result => {
+							if (result) {
+								this.step++;
+
+								if (this.hidden_steps.indexOf(this.step) > -1) {
+									this.stepNext();
+								} else {
+									this.focusTop();
+								}
+							} else {
+							}
+						});
+					}
+				}
+			},
+			stepBack : function(scope) {
+				if (typeof scope !== 'undefined') {
+					if (this.substeps[scope].step > 1) {
+						this.substeps[scope].step--;
+						if (this['hidden_steps_'+scope].indexOf(this.substeps[scope].step) > -1) {
+							this.stepBack(scope);
+						} else {
+							this.focusTop();
+						}
+					}
+				} else {
+					if (this.step > 1) {
+						this.step--;
+						if (this.hidden_steps.indexOf(this.step) > -1) {
+							this.stepBack();
+						} else {
+							this.focusTop();
+						}
+					}
+				}
+			},
+			stepTo: function(which) {
+				if (this.hidden_steps.indexOf(which) > -1) {
+					this.stepTo(which--)
+				} else {
+					this.step = which;
+					this.focusTop();
+				}
+			},
+			focusTop: function() {
+				currentElement = Array.prototype.slice.call(document.querySelectorAll('.form-section')).filter(function(item,index) {return item.style.display!="none"});
+				currentElement[0].scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
+			},
+			togglePowerUi: function() {
+				this.power_ui = (this.power_ui === 'off') ? 'on' : 'off';
+			},
+			// Data Support
+			getAuthorName: function() {
+				if (this.author_form.author_name == '') {
+					return 'Blank';
+				} else if (this.author_form.author_identity == 'pseudonymous' && this.author_form.author_pseudo_option == 'pseudonym') {
+					return this.author_form.author_name + ', Pseudonym';
+				} else if (this.author_form.author_identity == 'pseudonymous' && this.author_form.author_pseudo_option == 'provide_name') {
+					return this.author_form.author_name + ', whose pseudonym is ' + this.author_form.author_pseudonym;
+				} else {
+					return this.author_form.author_name;
+				}
+			},
+			// Add test data
+			addTestData: function() {
+				this.work_title = 'Thriller';
+				this.authors = [
+					{
+						author_identity: 'real',
+						author_wfh: 'no',
+						author_name: 'Michael Jackson',
+						author_birth_year: '1966',
+						author_death_year: '',
+						author_nationality_type: 'Citizen',
+						author_nationality: 'United States',
+						author_nature: 'Wrote music and lyrics.',
+						used_as_claimant: false
+					},
+					{
+						author_identity: 'real',
+						author_wfh: 'no',
+						author_name: 'Janet Jackson',
+						author_birth_year: '1958',
+						author_death_year: '2009',
+						author_nationality_type: 'Citizen',
+						author_nationality: 'United States',
+						author_nature: 'Wrote music and lyrics.',
+						used_as_claimant: false
+					}
+				];
+				this.author_count = 2;
+				this.year_completed = '2000';
+				this.work_publication_date = '2009-09-28';
+				this.work_publication_nation = 'United States';
+				this.claimant_count = 2;
+				this.claimants = [
+					{
+						claimant_name: 'Michael Jackson',
+						claimant_address_1: '1234 56th St',
+						claimant_address_2: 'Suite B',
+						claimant_city: 'Anyville',
+						claimant_state: 'VA',
+						claimant_postal: '55555',
+						claimant_country: 'USA',
+						claimant_transfer: '',
+						claimant_is_author: true,
+					},
+					{
+						claimant_name: 'Janet Jackson',
+						claimant_address_1: '1234 56th St',
+						claimant_address_2: 'Suite B',
+						claimant_city: 'Anyville',
+						claimant_state: 'VA',
+						claimant_postal: '55555',
+						claimant_country: 'USA',
+						claimant_transfer: '',
+						claimant_is_author: true,
+					}
+				];
+				this.previous_registration = 'Yes';
+				this.previous_reason = 'changed_version';
+				this.previous_reg_number = '123456789';
+				this.previous_reg_year = '1999';
+				this.changed_type = 'Compilation';
+				this.materials_added[0] = 'Vanilla Ice - Ice, Ice, Baby';
+				this.preexisting_materials[0] = 'ABBA - Dancing Queen';
+				this.use_deposit_account = 'no';
+				this.correspondence_address_1 = "1234 Universal Blvd";
+				this.correspondence_address_2 = "Suite 201";
+				this.correspondence_city = "Los Angeles";
+				this.correspondence_state = "CA";
+				this.correspondence_postal = "12345";
+				this.correspondence_email = "legal@mailinator.com";
+				this.correspondence_phone = "(123) 555-9876";
+				this.correspondence_fax = "(123) 555-1324";
+				this.certificate_delivery = "email";
+			}
+		},
+		mounted: function() {
+			var step_els = document.querySelectorAll('.form-section');
+			for (i=0; i<step_els.length; i++) {
+				var title = step_els[i].querySelector('.form-section-label').textContent || '';
+
+				this.steps.push({
+					label: title,
+					num: (i+1)
+				});
+			}
+			// this.addTestData();
+			// this.stepTo(12);
+		}
+	});
+</script>
+{% endblock %}

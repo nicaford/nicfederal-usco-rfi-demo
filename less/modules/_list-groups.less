@@ -18,3 +18,35 @@
   color:@gray;
   letter-spacing: 1px;
 }
+
+// Custom list groups
+.list-group-custom {
+
+}
+.list-group-custom-item {
+  display:flex;
+  border: solid @list-group-border;
+  border-width:0 1px;
+  &:hover a {
+    background-color: @list-group-hover-bg;
+  }
+  a {
+    color: @list-group-link-color;
+    display:block;
+    flex-grow: 1;
+    position: relative;
+    padding: 10px 15px;
+    // Place the border on the list items and negative margin up for better styling
+    margin-bottom: -1px;
+    background-color: @list-group-bg;
+    border: solid @list-group-border;
+    border-width:1px 0;
+    &:hover,
+    &:focus {
+      color: @link-hover-color;
+    }
+  }
+  a:last-child {
+    text-align:right;
+  }
+}

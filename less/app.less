@@ -16,6 +16,7 @@
     color:@text-color;
 }
 @import "modules/_buttons";
+@import "modules/_tables";
 @import "modules/_forms";
 @import "modules/_alerts";
 @import "modules/_progress-bars";
@@ -70,6 +71,26 @@ body {
 
 @import "modules/_social-links";
 @import "modules/_footer";
+
+// Stickies
+@media (min-width: @screen-sm-min) {
+    .col-sm-sticky {
+        position:sticky;
+        top:(@grid-gutter-width);
+    }
+    .col-sm-last + * {
+        clear:left;
+    }
+}
+@media (min-width: @screen-md-min) {
+    .col-md-sticky {
+        position:sticky;
+        top:(@grid-gutter-width);
+    }
+    .col-md-last + * {
+        clear:left;
+    }
+}
 
 // print
 @media print {

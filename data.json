@@ -1,6 +1,6 @@
 {
 	"site_name": "Electronic Copyright Office",
-	"bs_path": "/lib/bootstrap/",
+	"bs_path": "lib/bootstrap/",
 	"req": "<span class='form-required' title='This field required'>*</span>",
 	"states": {
 		"": "",
