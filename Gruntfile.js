@@ -105,7 +105,10 @@ module.exports = function(grunt) {
                 },
                 options: {
                     watchTask: true,
-                    proxy: 'eco.loc'
+                    server: {
+                      baseDir: "./"
+                    }
+                    // proxy: 'eco.loc'
                 }
             }
         }
