@@ -1012,7 +1012,8 @@
 
 			<div class="wizard-section-control">
 				<div class="pull-right">
-					<button type="submit" v-if="step == steps_total" class="btn btn-primary btn-lg"><i class="fa fa-check-circle"></i> Submit</button>
+					
+					<a href="thank-you.html" v-if="step == steps_total" class="btn btn-primary btn-lg"><i class="fa fa-check-circle"></i> Submit</a>
 				</div>
 				<div class="pull-right">
 					<button type="button" v-show="step < steps_total" v-on:click="stepNext()" class="btn btn-primary btn-lg">Next <i class="fa fa-angle-right"></i></button>

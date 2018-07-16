@@ -2,6 +2,13 @@
 	"site_name": "Electronic Copyright Office",
 	"bs_path": "lib/bootstrap/",
 	"req": "<span class='form-required' title='This field required'>*</span>",
+	"registration_types": [
+		"Sound Recording",
+		"Literary Work",
+		"Work of the Visual Arts",
+		"Work of the Performing Arts",
+		"Motion Picture/Audiovisual Work"
+	],
 	"states": {
 		"": "",
     "AL": "Alabama",

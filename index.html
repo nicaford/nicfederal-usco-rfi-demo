@@ -130,7 +130,7 @@
 					  <input type="password" class="form-control" id="password" placeholder="">
 					</div>
 					<div class="form-group form-actions">
-						<button type="submit" class="btn btn-primary">Login</button>
+						<button type="button" data-toggle="modal" data-target="#out-of-scope" class="btn btn-primary">Login</button>
 					</div>
 				</form>
 				<p>Having trouble logging in? <a href="#pwreset">Reset your password...</a></p>
@@ -151,22 +151,70 @@
 				  <a href="#info" data-toggle="popover" data-placement="left" data-content="&ldquo;Form view&rdquo; is a compact display of the form designed to allow users familiar with the form to fill it out more quickly."><i class="fa fa-question-circle"></i> What is "Form View"?</a>
 				</p>
         <div class="list-group-custom">
+					
 					<div class="list-group-custom-item">
 						<a href="register-sound-recording--wizard.html">Sound Recording</a>
 						<a href="register-sound-recording--form.html"><em>Start in Form View</em></a>
 					</div>
+					
 					<div class="list-group-custom-item">
-						<a href="register-sound-recording--wizard.html">Video Recording</a>
+						<a href="register-sound-recording--wizard.html">Literary Work</a>
 						<a href="register-sound-recording--form.html"><em>Start in Form View</em></a>
 					</div>
+					
 					<div class="list-group-custom-item">
-						<a href="register-sound-recording--wizard.html">Works and Lyrics</a>
+						<a href="register-sound-recording--wizard.html">Work of the Visual Arts</a>
 						<a href="register-sound-recording--form.html"><em>Start in Form View</em></a>
 					</div>
+					
+					<div class="list-group-custom-item">
+						<a href="register-sound-recording--wizard.html">Work of the Performing Arts</a>
+						<a href="register-sound-recording--form.html"><em>Start in Form View</em></a>
+					</div>
+					
+					<div class="list-group-custom-item">
+						<a href="register-sound-recording--wizard.html">Motion Picture/Audiovisual Work</a>
+						<a href="register-sound-recording--form.html"><em>Start in Form View</em></a>
+					</div>
+					
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal modal-custom fade" id="out-of-scope" tabindex="-1" role="dialog" aria-labelledby="modal-heading-out-of-scope" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="modal-heading-out-of-scope">Out of Scope</h4>
+      </div>
+      <div class="modal-body">
+        <p>User management and login are out-of-scope for this demo.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal modal-custom fade" id="introduction" tabindex="-1" role="dialog" aria-labelledby="modal-heading-introduction" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="modal-heading-introduction">Welcome to the eCO demo!</h4>
+      </div>
+      <div class="modal-body">
+        <p>Introduction text...</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-action="saveshown" data-dismiss="modal">Okay</button>
       </div>
     </div>
   </div>
@@ -289,5 +337,43 @@
 
 
 		
+<script>
+$(function(){
+	if (!getCookie('intro_shown')) {
+		$('#introduction').modal('show');
+	}
+	$('[data-action="saveshown"]').click(function(){
+		setCookie('intro_shown', 'yes');
+	});
+});
+
+function setCookie(cname, cvalue, exdays) {
+	if (typeof exdays !== 'undefined') {
+		var d = new Date();
+		d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+		var expires = "expires=" + d.toUTCString();
+		document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+	} else {
+		document.cookie = cname + "=" + cvalue + ";" + ";path=/";
+	}
+}
+
+function getCookie(cname) {
+		var name = cname + "=";
+		var decodedCookie = decodeURIComponent(document.cookie);
+		var ca = decodedCookie.split(';');
+		for (var i = 0; i < ca.length; i++) {
+				var c = ca[i];
+				while (c.charAt(0) == ' ') {
+						c = c.substring(1);
+				}
+				if (c.indexOf(name) == 0) {
+						return c.substring(name.length, c.length);
+				}
+		}
+		return false;
+}
+</script>
+
 	</body>
 </html>
