@@ -11,6 +11,7 @@ Demo for a potential rebuild of the eCO system.
 ### To run:
 
 ☞ _If you don't have node already installed, you'll [have to install it](https://www.google.com/search?q=how+to+install+nodejs)._
+☞ _If you don't have grunt already installed, you need to install it after installing npm using_: `npm install -g grunt-cli`
 
 1. From your terminal window, run the following command: `npm install`
 
